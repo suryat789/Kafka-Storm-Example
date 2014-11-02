@@ -36,15 +36,16 @@ public class WordSplitterBolt implements IRichBolt{
 	 */
 	public void execute(Tuple input) {
 		String sentence = input.getString(0);
-		String[] words = sentence.split(" ");
-		for(String word: words){
-			word = word.trim();
+		String word = "";
+
+		if(sentence.contains("#")){
+			word = sentence.substring(sentence.indexOf("#")+1, sentence.length());
+			word = word.trim().toUpperCase();
 			if(!word.isEmpty()){
-				word = word.toLowerCase();
 				collector.emit(new Values(word));
 			}
 		}
-		collector.ack(input);
+		//collector.ack(input);
 	}
 	
 	/**

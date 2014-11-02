@@ -1,4 +1,4 @@
-package dev.ep.storm.spout;
+package dev.niu;
 
 import static nl.minvenj.nfi.storm.kafka.util.ConfigUtils.CONFIG_FAIL_HANDLER;
 import static nl.minvenj.nfi.storm.kafka.util.ConfigUtils.DEFAULT_FAIL_HANDLER;
