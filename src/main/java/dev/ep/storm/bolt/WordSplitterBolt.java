@@ -45,7 +45,7 @@ public class WordSplitterBolt implements IRichBolt{
 				collector.emit(new Values(word));
 			}
 		}
-		//collector.ack(input);
+		collector.ack(input);
 	}
 	
 	/**

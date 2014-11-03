@@ -17,7 +17,7 @@ public class KafkaTopology {
 
 	public static void main(String args[]) {
 		
-		BrokerHosts zk = new ZkHosts("10.0.0.9:2181");
+		BrokerHosts zk = new ZkHosts(Constants.ZK_HOST);
 		SpoutConfig spoutConf = new SpoutConfig(zk, Constants.KAFKA_TOPIC, "/kafkastorm", "discovery");
 		spoutConf.scheme = new SchemeAsMultiScheme(new StringScheme());
 		KafkaSpout spout = new KafkaSpout(spoutConf);
