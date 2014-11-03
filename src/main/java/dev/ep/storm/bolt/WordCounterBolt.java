@@ -13,18 +13,27 @@ import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 
+
 /**
- * A bolt processes any number of input streams and produces any number of new output streams. 
- * Most of the logic of a computation goes into bolts, such as functions, filters, streaming joins,
- * streaming aggregations, talking to databases, and so on.
+ * The Class WordCounterBolt.
  */
 public class WordCounterBolt implements IRichBolt{
+	
+	/** The output. */
 	File fOutput = new File("src/main/resources/Report.html"); 
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 5881928091719450483L;
+	
+	/** The counters. */
 	Map<String, Integer> counters;
+	
+	/** The collector. */
 	private OutputCollector collector;
 
+	/** 
+	 * @see backtype.storm.task.IBolt#prepare(java.util.Map, backtype.storm.task.TopologyContext, backtype.storm.task.OutputCollector)
+	 */
 	@SuppressWarnings("rawtypes")
 	public void prepare(Map stormConf, TopologyContext context,
 			OutputCollector collector) {
@@ -32,7 +41,11 @@ public class WordCounterBolt implements IRichBolt{
 		this.collector = collector;
 	}
 
+	/** 
+	 * @see backtype.storm.task.IBolt#execute(backtype.storm.tuple.Tuple)
+	 */
 	public void execute(Tuple input) {
+		// Count Logic
 		String str = input.getString(0);
 		if(!counters.containsKey(str)){
 			counters.put(str, 1);
@@ -40,6 +53,39 @@ public class WordCounterBolt implements IRichBolt{
 			Integer c = counters.get(str) +1;
 			counters.put(str, c);
 		}
+		
+		// Print Report
+		printReport();
+		
+		// Acknowledge
+		collector.ack(input);
+	}
+
+	/** 
+	 * @see backtype.storm.task.IBolt#cleanup()
+	 */
+	public void cleanup() {
+
+	}
+
+	/** 
+	 * @see backtype.storm.topology.IComponent#declareOutputFields(backtype.storm.topology.OutputFieldsDeclarer)
+	 */
+	public void declareOutputFields(OutputFieldsDeclarer declarer) {
+		declarer.declare(new Fields("word", "count"));
+	}
+
+	/** 
+	 * @see backtype.storm.topology.IComponent#getComponentConfiguration()
+	 */
+	public Map<String, Object> getComponentConfiguration() {
+		return null;
+	}
+	
+	/**
+	 * Prints the report in HTML format.
+	 */
+	private void printReport(){
 		StringBuffer buffer = new StringBuffer();
 		try (PrintWriter writer = new PrintWriter(fOutput)) {
 			buffer.append("<html><body>");
@@ -48,14 +94,11 @@ public class WordCounterBolt implements IRichBolt{
 			buffer.append("<table border=\"1\" cellpadding=\"5\">");
 			
 			for(Map.Entry<String, Integer> entry: counters.entrySet()){
-				//System.out.println(entry.getKey()+" : " + entry.getValue());
-				//writer.println(entry.getKey()+" : " + entry.getValue());
-				
 				buffer.append("<tr>");
 				buffer.append("<td>" + entry.getKey() + "</td>" + "<td>" + entry.getValue() + "</td>");
 				buffer.append("</tr>");
-				
 			}
+			
 			buffer.append("</table>");
 			buffer.append("</center>");
 			buffer.append("</body></html>");
@@ -65,18 +108,5 @@ public class WordCounterBolt implements IRichBolt{
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		collector.ack(input);
-	}
-
-	public void cleanup() {
-
-	}
-
-	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		declarer.declare(new Fields("word", "count"));
-	}
-
-	public Map<String, Object> getComponentConfiguration() {
-		return null;
 	}
 }

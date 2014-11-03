@@ -10,10 +10,9 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 
+
 /**
- * A bolt processes any number of input streams and produces any number of new output streams. 
- * Most of the logic of a computation goes into bolts, such as functions, filters, streaming joins,
- * streaming aggregations, talking to databases, and so on.
+ * The Class WordSplitterBolt.
  */
 public class WordSplitterBolt implements IRichBolt{
 	

@@ -15,6 +15,11 @@ import dev.utils.Constants;
 
 public class KafkaTopology {
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String args[]) {
 		
 		BrokerHosts zk = new ZkHosts(Constants.ZK_HOST);

@@ -10,6 +10,9 @@ import kafka.producer.KeyedMessage;
 import kafka.producer.ProducerConfig;
 import dev.utils.Constants;
 
+/**
+ * The Class SimpleProducer.
+ */
 public class SimpleProducer {
 
 	private static Producer<Integer, String> producer;
@@ -17,25 +20,36 @@ public class SimpleProducer {
 	private static List<String> nums = new ArrayList<String>();
 	private static Random random = new Random();
 
+	/**
+	 * Instantiates a new simple producer.
+	 */
 
-	public SimpleProducer()	{
+	/**
+	 * Load properties.
+	 */
+	private void loadProperties(){
 		props.put("metadata.broker.list", Constants.KAFKA_HOST);
 		props.put("serializer.class", "kafka.serializer.StringEncoder");
 		props.put("request.required.acks", "1");
 		producer = new Producer<Integer, String>(new ProducerConfig(props));
 	}
 
-	private void loadProperties(){
-		
-	}
-
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		int index = 0;
-		loadDummyData();
-		KeyedMessage<Integer, String> data = null; //new KeyedMessage<Integer, String>(TOPIC, MESSAGE);
-		SimpleProducer sp = new SimpleProducer();
-		sp.loadProperties();
 		String strData = null;
+		SimpleProducer sp = new SimpleProducer();
+		
+		sp.loadProperties();
+		loadDummyData();
+		
+		KeyedMessage<Integer, String> data = null; //new KeyedMessage<Integer, String>(TOPIC, MESSAGE);
+		
+		
 
 		for(int i=1; i<=2000; i++){
 			index = random.nextInt(nums.size());
@@ -48,6 +62,9 @@ public class SimpleProducer {
 	}
 
 
+	/**
+	 * Load dummy data.
+	 */
 	public static void loadDummyData() {
 		nums.add("98");
 		nums.add("XP");
