@@ -1,4 +1,5 @@
 package dev.ep.storm.topology;
+
 import storm.kafka.BrokerHosts;
 import storm.kafka.KafkaSpout;
 import storm.kafka.SpoutConfig;
@@ -17,24 +18,25 @@ public class KafkaTopology {
 
 	/**
 	 * The main method.
-	 *
 	 * @param args the arguments
 	 */
 	public static void main(String args[]) {
-		
+
 		BrokerHosts zk = new ZkHosts(Constants.ZK_HOST);
 		SpoutConfig spoutConf = new SpoutConfig(zk, Constants.KAFKA_TOPIC, "/kafkastorm", "discovery");
 		spoutConf.scheme = new SchemeAsMultiScheme(new StringScheme());
+		spoutConf.forceFromStart = true;
+
 		KafkaSpout spout = new KafkaSpout(spoutConf);
 		TopologyBuilder builder = new TopologyBuilder();
 		builder.setSpout("spout", spout, 1);
-		
+
 		builder.setBolt("splitterbolt", new WordSplitterBolt()).shuffleGrouping("spout");
 		builder.setBolt("countbolt", new WordCounterBolt()).fieldsGrouping("splitterbolt", new Fields("word"));
-		
+
 		Config config = new Config();
 		config.setDebug(true);
-		
+
 		LocalCluster cluster = new LocalCluster();
 		cluster.submitTopology("kafka", config, builder.createTopology());
 

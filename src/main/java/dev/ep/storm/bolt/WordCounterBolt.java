@@ -17,17 +17,17 @@ import backtype.storm.tuple.Tuple;
 /**
  * The Class WordCounterBolt.
  */
-public class WordCounterBolt implements IRichBolt{
-	
+public class WordCounterBolt implements IRichBolt {
+
 	/** The output. */
 	File fOutput = new File("src/main/resources/Report.html"); 
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 5881928091719450483L;
-	
+
 	/** The counters. */
 	Map<String, Integer> counters;
-	
+
 	/** The collector. */
 	private OutputCollector collector;
 
@@ -53,10 +53,10 @@ public class WordCounterBolt implements IRichBolt{
 			Integer c = counters.get(str) +1;
 			counters.put(str, c);
 		}
-		
+
 		// Print Report
 		printReport();
-		
+
 		// Acknowledge
 		collector.ack(input);
 	}
@@ -81,7 +81,7 @@ public class WordCounterBolt implements IRichBolt{
 	public Map<String, Object> getComponentConfiguration() {
 		return null;
 	}
-	
+
 	/**
 	 * Prints the report in HTML format.
 	 */
@@ -92,19 +92,19 @@ public class WordCounterBolt implements IRichBolt{
 			buffer.append("<center>");
 			buffer.append("<h3>Report</h3>");
 			buffer.append("<table border=\"1\" cellpadding=\"5\">");
-			
+
 			for(Map.Entry<String, Integer> entry: counters.entrySet()){
 				buffer.append("<tr>");
 				buffer.append("<td>" + entry.getKey() + "</td>" + "<td>" + entry.getValue() + "</td>");
 				buffer.append("</tr>");
 			}
-			
+
 			buffer.append("</table>");
 			buffer.append("</center>");
 			buffer.append("</body></html>");
 
 			writer.print(buffer);
-			
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

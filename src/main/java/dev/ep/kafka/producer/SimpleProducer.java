@@ -27,8 +27,8 @@ public class SimpleProducer {
 	/**
 	 * Load properties.
 	 */
-	private void loadProperties(){
-		props.put("metadata.broker.list", Constants.KAFKA_HOST);
+	private void loadProperties(String strKafkaHosts){
+		props.put("metadata.broker.list", strKafkaHosts);
 		props.put("serializer.class", "kafka.serializer.StringEncoder");
 		props.put("request.required.acks", "1");
 		producer = new Producer<Integer, String>(new ProducerConfig(props));
@@ -43,21 +43,23 @@ public class SimpleProducer {
 		int index = 0;
 		String strData = null;
 		SimpleProducer sp = new SimpleProducer();
-		
-		sp.loadProperties();
-		loadDummyData();
-		
-		KeyedMessage<Integer, String> data = null; //new KeyedMessage<Integer, String>(TOPIC, MESSAGE);
-		
-		
 
-		for(int i=1; i<=2000; i++){
+		sp.loadProperties(Constants.KAFKA_HOST1 + Constants.HOST_SEPARATOR + Constants.KAFKA_HOST2);
+		loadDummyData();
+
+		KeyedMessage<Integer, String> data = null; //new KeyedMessage<Integer, String>(TOPIC, MESSAGE);
+
+		for(int i=1; i<=200; i++){
 			index = random.nextInt(nums.size());
 			strData = "I love #Windows " + nums.get(index);
-
+			System.out.println(i + "...");
 			data = new KeyedMessage<Integer, String>(Constants.KAFKA_TOPIC, strData);
-			producer.send(data);
-		}	
+			try {
+				producer.send(data);
+			} catch (Exception ex){
+				ex.printStackTrace();
+			}
+		}
 		producer.close();
 	}
 
